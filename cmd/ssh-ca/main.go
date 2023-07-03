@@ -2,10 +2,10 @@ package main
 
 import (
 	"crypto/rand"
-	mathrand "math/rand"
 	"flag"
 	"fmt"
 	"io/ioutil"
+	mathrand "math/rand"
 	"net"
 	"os"
 	"os/user"
@@ -36,7 +36,7 @@ func signUserCert(userPrincipal string, validHours int, pubKey ssh.PublicKey, ca
 		ValidBefore:     uint64(time.Now().Unix() + int64(validHours)*3600),
 		Key:             pubKey,
 		Serial:          mathrand.Uint64(),
-		KeyId:					 fmt.Sprintf("ssh cert for %s", userPrincipal),
+		KeyId:           fmt.Sprintf("ssh cert for %s", userPrincipal),
 		CertType:        ssh.UserCert,
 		SignatureKey:    caPublicKey,
 		Permissions: ssh.Permissions{
@@ -51,8 +51,8 @@ func signUserCert(userPrincipal string, validHours int, pubKey ssh.PublicKey, ca
 func addCertToAgent(key *ed25519.PrivateKey, cert *ssh.Certificate, validHours int) error {
 	fmt.Printf("\n")
 	addkey := &agent.AddedKey{
-		PrivateKey:  key,
-		Certificate: cert,
+		PrivateKey:   key,
+		Certificate:  cert,
 		LifetimeSecs: uint32(validHours * 3600),
 	}
 	if sshAgent, err := net.Dial("unix", os.Getenv("SSH_AUTH_SOCK")); err == nil {
