@@ -1,19 +1,15 @@
-package main
+package sshca
 
 import (
 	"crypto/rand"
 	"flag"
 	"fmt"
 	"io/ioutil"
-	mathrand "math/rand"
-	"net"
 	"os"
 	"os/user"
-	"time"
 
 	"golang.org/x/crypto/ed25519"
 	"golang.org/x/crypto/ssh"
-	"golang.org/x/crypto/ssh/agent"
 )
 
 var (
@@ -21,54 +17,6 @@ var (
 	caKeyPath           = flag.String("cakeypath", "/etc/ssh/ssh_ca.key", "path to the SSH CA private key")
 	caKeyPasspharsePath = flag.String("cakeypasspath", "", "path to the SSH CA encrypted private key's passphrase")
 )
-
-func signUserCert(userPrincipal string, validHours int, pubKey ssh.PublicKey, caPublicKey ssh.PublicKey, signer ssh.Signer) (*ssh.Certificate, error) {
-	exts := map[string]string{
-		"permit-X11-forwarding":   "",
-		"permit-agent-forwarding": "",
-		"permit-port-forwarding":  "",
-		"permit-pty":              "",
-		"permit-user-rc":          "",
-	}
-	cert := &ssh.Certificate{
-		ValidPrincipals: []string{userPrincipal},
-		ValidAfter:      uint64(time.Now().Unix()),
-		ValidBefore:     uint64(time.Now().Unix() + int64(validHours)*3600),
-		Key:             pubKey,
-		Serial:          mathrand.Uint64(),
-		KeyId:           fmt.Sprintf("ssh cert for %s", userPrincipal),
-		CertType:        ssh.UserCert,
-		SignatureKey:    caPublicKey,
-		Permissions: ssh.Permissions{
-			CriticalOptions: map[string]string{},
-			Extensions:      exts,
-		},
-	}
-	err := cert.SignCert(rand.Reader, signer)
-	return cert, err
-}
-
-func addCertToAgent(key *ed25519.PrivateKey, cert *ssh.Certificate, validHours int) error {
-	fmt.Printf("\n")
-	addkey := &agent.AddedKey{
-		PrivateKey:   key,
-		Certificate:  cert,
-		LifetimeSecs: uint32(validHours * 3600),
-	}
-	if sshAgent, err := net.Dial("unix", os.Getenv("SSH_AUTH_SOCK")); err == nil {
-		userSshAgent := agent.NewClient(sshAgent)
-		fmt.Printf("adding certificate to ssh-agent\n")
-		if err := (userSshAgent).Add(*addkey); err == nil {
-			fmt.Errorf("added certificate to ssh-agent, please run ssh-add -L to verify\n")
-			return nil
-		} else {
-			fmt.Errorf("Failed to add certificate to ssh-agent: %s\n", err)
-			return err
-		}
-	} else {
-		return err
-	}
-}
 
 func main() {
 	flag.Parse()
