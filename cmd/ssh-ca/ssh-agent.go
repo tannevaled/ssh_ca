@@ -21,7 +21,7 @@ type SSHAgent struct {
 
 type SSHAgentInterface interface {
 	printList()
-	add(SSHCertificateInterface, int) error
+	add(SSHCertificateInterface, int)
 }
 
 /*
@@ -47,8 +47,7 @@ func NewSSHAgent() SSHAgentInterface {
  *
  *
  */
-func (self *SSHAgent) add(certificate SSHCertificateInterface, validHours int) error {
-	//fmt.Printf("\n")
+func (self *SSHAgent) add(certificate SSHCertificateInterface, validHours int) {
 	__validBefore := time.Unix(int64(certificate.getCertificate().ValidBefore), 0)
 	__comment := fmt.Sprintf(
 		"SSH-CA:%s:VALID_BEFORE:%s",
@@ -62,13 +61,11 @@ func (self *SSHAgent) add(certificate SSHCertificateInterface, validHours int) e
 		Comment:      __comment,
 	}
 
-	fmt.Printf("adding certificate to ssh-agent\n")
 	if err := (self.agent).Add(*addkey); err == nil {
-		fmt.Errorf("added certificate to ssh-agent, please run ssh-add -L to verify\n")
-		return nil
+		fmt.Printf("Added certificate to ssh-agent, please run ssh-add -l to verify\n")
 	} else {
-		fmt.Errorf("Failed to add certificate to ssh-agent: %s\n", err)
-		return err
+		fmt.Println(fmt.Errorf("Failed to add SSH certificate to ssh-agent: %s\n", err))
+		os.Exit(1)
 	}
 }
 
@@ -78,12 +75,12 @@ func (self *SSHAgent) add(certificate SSHCertificateInterface, validHours int) e
  *
  */
 func (self *SSHAgent) printList() {
-	key_array, err := self.agent.List()
+	__key_array, err := self.agent.List()
 	if err != nil {
 		fmt.Println([]byte(err.Error()))
 		os.Exit(1)
 	}
-	for _, ssh_key := range key_array {
+	for _, __ssh_key := range __key_array {
 		/**
 		 *
 		 * x/crypto: document how to unmarshal ssh certs
@@ -93,26 +90,28 @@ func (self *SSHAgent) printList() {
 		 * https://cs.opensource.google/go/x/crypto/+/refs/tags/v0.10.0:ssh/keys.go;l=271
 		 *
 		 */
-		public_key, err := ssh.ParsePublicKey(ssh_key.Blob)
+		__public_key, err := ssh.ParsePublicKey(__ssh_key.Blob)
 		if err != nil {
 			fmt.Println([]byte(err.Error()))
 			os.Exit(1)
 		}
-		ssh_certificate := public_key.(*ssh.Certificate)
+		__ssh_certificate := __public_key.(*ssh.Certificate)
 		str_valid_after := fmt.Sprintf(
 			"<ValidAfter>%s</ValidAfter>",
-			strftime.Format(time.Unix(int64(ssh_certificate.ValidAfter), 0), "%Y/%m/%d %H:%M:%S"),
+			strftime.Format(time.Unix(int64(__ssh_certificate.ValidAfter), 0), "%Y/%m/%d %H:%M:%S"),
 		)
 		str_valid_before := fmt.Sprintf(
 			"<ValidBefore>%s</ValidBefore>",
-			strftime.Format(time.Unix(int64(ssh_certificate.ValidBefore), 0), "%Y/%m/%d %H:%M:%S"),
+			strftime.Format(time.Unix(int64(__ssh_certificate.ValidBefore), 0), "%Y/%m/%d %H:%M:%S"),
 		)
-		str_principals := fmt.Sprintf("<Principals>%#v<Principals>", ssh_certificate.ValidPrincipals)
+		str_principals := fmt.Sprintf("<Principals>%#v</Principals>", __ssh_certificate.ValidPrincipals)
+		str_extensions := fmt.Sprintf("<Extensions>%#v</Extensions>", __ssh_certificate.Extensions)
 		fmt.Printf(
-			"<SSHCertificate>\n\t%s\n\t%s\n\t%s\n</SSHCertificate>\n",
+			"<SSHCertificate>\n\t%s\n\t%s\n\t%s\n\t%s\n</SSHCertificate>\n",
 			str_valid_after,
 			str_valid_before,
 			str_principals,
+			str_extensions,
 		)
 	}
 }

@@ -34,12 +34,9 @@ func main() {
 		fmt.Errorf("failed to sign SSH certificate: %s\n", err)
 		os.Exit(1)
 	}
-	fmt.Printf("Signed certificate successfully by SSH CA with the fingerprint [%s]\n", ssh_ca.FingerprintSHA256())
+	fmt.Printf("Successfully signed certificate by SSH CA with the fingerprint [%s]\n", ssh_ca.FingerprintSHA256())
 
-	if err := ssh_agent.add(ssh_certificate, *validHours); err != nil {
-		fmt.Errorf("failed to add SSH certificate to ssh agent: %s\n", err)
-		os.Exit(1)
-	}
+	ssh_agent.add(ssh_certificate, *validHours)
 
 	//ssh_agent.list()
 	fmt.Println(ssh_certificate.publicKeyFingerprintSHA256())
