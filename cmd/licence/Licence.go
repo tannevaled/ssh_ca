@@ -1,4 +1,4 @@
-package cmd
+package CmdLicence
 
 import (
 	"fmt"

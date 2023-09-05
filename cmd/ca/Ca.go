@@ -13,8 +13,6 @@ import (
  */
 func Ca(
 	ssh_ca_config_file_path *string,
-	ssh_ca_name *string,
-	ssh_ca_private_key_file_path *string,
 ) *cobra.Command {
 	__Ca := &cobra.Command{
 		Use:     "ca",
@@ -26,13 +24,13 @@ func Ca(
 	__Ca.AddCommand(Show(ssh_ca_config_file_path))
 	__Ca.AddCommand(List(ssh_ca_config_file_path))
 	__Ca.AddCommand(Edit(ssh_ca_config_file_path))
-	__Ca.AddCommand(Toggle(ssh_ca_config_file_path))
+	//__Ca.AddCommand(Toggle(ssh_ca_config_file_path))
 
 	__Ca.PersistentFlags().StringVarP(
 		ssh_ca_config_file_path,
-		"config-file-path",
-		"c",
-		"",
+		"config-file-path", //long-flag
+		"",                 // short flag
+		"",                 // default value
 		"The SSH Certificate Authority config file path",
 	)
 	__Ca.MarkPersistentFlagRequired("config-file-path")

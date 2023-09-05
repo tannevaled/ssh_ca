@@ -52,36 +52,42 @@ func (self SSHAgentStruct) PrintList() {
 			fmt.Println([]byte(err.Error()))
 			os.Exit(1)
 		}
-		__ssh_certificate := __public_key.(*ssh.Certificate)
-		__now := time.Now() //.Unix()
-		__valid_before := time.Unix(int64(__ssh_certificate.ValidBefore), 0)
-		if __valid_before.After(__now) {
-			__str_valid_before = text.BgGreen.Sprint(strftime.Format(__valid_before, "%Y/%m/%d %H:%M:%S"))
-		} else {
-			__str_valid_before = text.BgRed.Sprint(strftime.Format(__valid_before, "%Y/%m/%d %H:%M:%S"))
+		if __ssh_certificate, ok := __public_key.(*ssh.Certificate); ok {
+			__now := time.Now() //.Unix()
+			__valid_before := time.Unix(int64(__ssh_certificate.ValidBefore), 0)
+			if __valid_before.After(__now) {
+				__str_valid_before = text.BgGreen.Sprint(
+					strftime.Format(
+						__valid_before,
+						"%Y/%m/%d %H:%M:%S",
+					),
+				)
+			} else {
+				__str_valid_before = text.BgRed.Sprint(strftime.Format(__valid_before, "%Y/%m/%d %H:%M:%S"))
+			}
+			// strftime.Format(time.Unix(int64(__ssh_certificate.ValidAfter), 0), "%Y/%m/%d %H:%M:%S"),
+			t.AppendRow(table.Row{
+				__str_valid_before,
+				strings.Join(__ssh_certificate.ValidPrincipals, ", "),
+			})
+			//str_valid_after := fmt.Sprintf(
+			//	"%s",
+			//	strftime.Format(time.Unix(int64(__ssh_certificate.ValidAfter), 0), "%Y/%m/%d %H:%M:%S"),
+			//)
+			//str_valid_before := fmt.Sprintf(
+			//	"%s",
+			//	strftime.Format(time.Unix(int64(__ssh_certificate.ValidBefore), 0), "%Y/%m/%d %H:%M:%S"),
+			//)
+			//str_principals := fmt.Sprintf("<Principals>%#v</Principals>", __ssh_certificate.ValidPrincipals)
+			//str_extensions := fmt.Sprintf("<Extensions>%#v</Extensions>", __ssh_certificate.Extensions)
+			//fmt.Printf(
+			//	"<SSHCertificate>\n %s %s\n\t%s\n\t%s\n</SSHCertificate>\n",
+			//	str_valid_after,
+			//	str_valid_before,
+			//	str_principals,
+			//	str_extensions,
+			//)
 		}
-		// strftime.Format(time.Unix(int64(__ssh_certificate.ValidAfter), 0), "%Y/%m/%d %H:%M:%S"),
-		t.AppendRow(table.Row{
-			__str_valid_before,
-			strings.Join(__ssh_certificate.ValidPrincipals, ", "),
-		})
-		//str_valid_after := fmt.Sprintf(
-		//	"%s",
-		//	strftime.Format(time.Unix(int64(__ssh_certificate.ValidAfter), 0), "%Y/%m/%d %H:%M:%S"),
-		//)
-		//str_valid_before := fmt.Sprintf(
-		//	"%s",
-		//	strftime.Format(time.Unix(int64(__ssh_certificate.ValidBefore), 0), "%Y/%m/%d %H:%M:%S"),
-		//)
-		//str_principals := fmt.Sprintf("<Principals>%#v</Principals>", __ssh_certificate.ValidPrincipals)
-		//str_extensions := fmt.Sprintf("<Extensions>%#v</Extensions>", __ssh_certificate.Extensions)
-		//fmt.Printf(
-		//	"<SSHCertificate>\n %s %s\n\t%s\n\t%s\n</SSHCertificate>\n",
-		//	str_valid_after,
-		//	str_valid_before,
-		//	str_principals,
-		//	str_extensions,
-		//)
 	}
 	t.Render()
 }

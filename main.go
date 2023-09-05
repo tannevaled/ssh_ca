@@ -6,8 +6,9 @@ import (
 	"os"
 	"path/filepath"
 
-	"ssh-ca/cmd"
-	cmdCa "ssh-ca/cmd/ca"
+	CmdAgent "ssh-ca/cmd/agent"
+	CmdCa "ssh-ca/cmd/ca"
+	CmdLicence "ssh-ca/cmd/licence"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -58,8 +59,6 @@ func readConfig(ssh_ca_config_file_path *string, cmd *cobra.Command) {
 func main() {
 	var version string = "0.0.1"
 	var ssh_ca_config_file_path string
-	var ssh_ca_private_key_file_path string
-	var ssh_ca_name string
 
 	app := &cobra.Command{
 		Use:     "ssh-ca",
@@ -76,13 +75,9 @@ func main() {
 		app.MarkPersistentFlagRequired("config-file-path")
 	*/
 	app.AddCommand(
-		cmd.Licence(),
-		cmdCa.Ca(
-			&ssh_ca_config_file_path,
-			&ssh_ca_name,
-			&ssh_ca_private_key_file_path,
-		),
-		cmd.Agent(),
+		CmdLicence.Licence(),
+		CmdCa.Ca(&ssh_ca_config_file_path),
+		CmdAgent.Agent(),
 	)
 	app.Execute()
 
