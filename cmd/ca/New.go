@@ -3,7 +3,7 @@ package CmdCa
 import (
 	"log"
 	Config "ssh-ca/config"
-	SSHCertificateAuthority "ssh-ca/ssh/certificate/authority"
+	SSHKeypairED25519 "ssh-ca/ssh/keypair/ed25519"
 
 	"github.com/spf13/cobra"
 )
@@ -33,16 +33,13 @@ func New(
 			//} else {
 			//__SSHCertificateAuthority := SSHCertificateAuthority.New(ssh_ca_name, __ssh_ca_private_key_file_path_abs)
 			__Config := Config.New(ssh_ca_config_file_path)
-			__SSHCertificateAuthority := SSHCertificateAuthority.New(
-				&__ssh_ca_name,
-				&__ssh_ca_description,
-			)
-			log.Printf("%#v\n", __SSHCertificateAuthority)
-			__Config.AddCa(
-				__SSHCertificateAuthority.GetName(),
-				__SSHCertificateAuthority.GetDescription(),
-				string(__SSHCertificateAuthority.GetSSHKeypairED25519().ExportPrivateKey()),
-				string(__SSHCertificateAuthority.GetSSHKeypairED25519().ExportPublicKey()),
+			__sshKeypairEd25519 := SSHKeypairED25519.New()
+			log.Printf("%#v\n", __sshKeypairEd25519)
+			__Config.SetCertificateAuthority(
+				__ssh_ca_name,
+				__ssh_ca_description,
+				string(__sshKeypairEd25519.ExportPrivateKey()),
+				string(__sshKeypairEd25519.ExportPublicKey()),
 			)
 			//__SSHCertificateAuthority.Show()
 			//__SSHCertificateAuthority.SaveOnDisk()

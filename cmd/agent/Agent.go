@@ -11,12 +11,18 @@ import (
  * SSH Agent (sub-)commands
  *
  */
-func Agent() *cobra.Command {
+func Agent(
+	ssh_ca_config_file_path *string,
+) *cobra.Command {
 	__cmdAgent := &cobra.Command{
 		Use:   "agent",
 		Short: "SSH agent sub-commands",
 	}
 
-	__cmdAgent.AddCommand(CmdAgentCertificate.AgentCertificate())
+	__cmdAgent.AddCommand(
+		CmdAgentCertificate.AgentCertificate(
+			ssh_ca_config_file_path,
+		)
+	)
 	return __cmdAgent
 }

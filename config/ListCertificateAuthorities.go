@@ -8,10 +8,10 @@ import (
 	"github.com/jedib0t/go-pretty/v6/table"
 )
 
-func (self Struct) ListCa() {
+func (self Struct) ListCertificateAuthorities() {
 	//var __sshSigner ssh.Signer
 	var certificateAuthorities []CertificateAuthority
-	rows, err := self.db.Query("SELECT * from ca ORDER BY creation_date")
+	rows, err := self.db.Query("SELECT * from certificate_authorities ORDER BY creation_date")
 	if err != nil {
 		fmt.Printf("%#v\n", err)
 		os.Exit(1)

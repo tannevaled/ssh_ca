@@ -77,7 +77,7 @@ func main() {
 	app.AddCommand(
 		CmdLicence.Licence(),
 		CmdCa.Ca(&ssh_ca_config_file_path),
-		CmdAgent.Agent(),
+		CmdAgent.Agent(&ssh_ca_config_file_path),
 	)
 	app.Execute()
 

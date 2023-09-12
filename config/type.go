@@ -15,7 +15,8 @@ type CertificateAuthority struct {
 }
 
 type Interface interface {
-	AddCa(string, string, string, string)
+	SetCertificateAuthority(string, string, string, string)
+	GetCertificateAuthority(*string)
 	ShowCa(string)
 	ListCa()
 	EditCa(string)

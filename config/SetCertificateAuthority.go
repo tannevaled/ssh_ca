@@ -13,14 +13,14 @@ import (
 	strftime "github.com/itchyny/timefmt-go"
 )
 
-func (self Struct) AddCa(
+func (self Struct) SetCertificateAuthority(
 	name string,
 	description string,
 	private_key string,
 	public_key string,
 ) {
 	res, err := self.db.Exec(`
-INSERT INTO ca(enabled,name,description,private_key,public_key,creation_date)
+INSERT INTO certificate_authorities(enabled,name,description,private_key,public_key,creation_date)
 VALUES (true,?,?,?,?,?)`,
 		name,
 		description,

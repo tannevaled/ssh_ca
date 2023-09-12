@@ -28,7 +28,7 @@ func New(
 	}
 
 	if _, err := db.Exec(`
-CREATE TABLE IF NOT EXISTS ca (
+CREATE TABLE IF NOT EXISTS certificate_authorities (
 id            INTEGER PRIMARY KEY AUTOINCREMENT,
 enabled       BOOL NOT NULL,
 name          VARCHAR(32) NOT NULL UNIQUE,

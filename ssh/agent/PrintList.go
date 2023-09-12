@@ -52,6 +52,9 @@ func (self SSHAgentStruct) PrintList() {
 			fmt.Println([]byte(err.Error()))
 			os.Exit(1)
 		}
+		/*
+		 * https://freshman.tech/snippets/go/check-type-of-value/
+		 */
 		if __ssh_certificate, ok := __public_key.(*ssh.Certificate); ok {
 			__now := time.Now() //.Unix()
 			__valid_before := time.Unix(int64(__ssh_certificate.ValidBefore), 0)
