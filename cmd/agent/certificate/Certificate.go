@@ -4,14 +4,18 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func AgentCertificate() *cobra.Command {
-	__cmdAgentCertificate := &cobra.Command{
+func AgentCertificate(
+	ssh_ca_config_file_path *string,
+
+) *cobra.Command {
+	__cmd := &cobra.Command{
 		Use:     "certificate",
 		Aliases: []string{"cert"},
 		Short:   "certificate sub-commands",
 	}
 
-	__cmdAgentCertificate.AddCommand(AgentCertificateList())
+	__cmd.AddCommand(AgentCertificateCreate(ssh_ca_config_file_path))
+	__cmd.AddCommand(AgentCertificateList())
 
-	return __cmdAgentCertificate
+	return __cmd
 }

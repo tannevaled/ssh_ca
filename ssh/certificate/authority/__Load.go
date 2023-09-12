@@ -7,7 +7,10 @@ import (
 	"golang.org/x/crypto/ssh"
 )
 
-func Load(private_key_file_path string) Interface {
+func Load(
+	
+	private_key_file_path string
+) Interface {
 	var __sshSigner ssh.Signer
 
 	// read the CA private key file
