@@ -20,6 +20,7 @@ func Version(
 			var Arch string
 			//var LastCommit time.Time
 			var LC string
+			var GitHash string
 
 			fmt.Printf("version: '%s'\n", version)
 
@@ -35,11 +36,14 @@ func Version(
 					case "vcs.time":
 						//LastCommit, _ = time.Parse(time.RFC3339, kv.Value)
 						LC = kv.Value
+					case "vcs.revision":
+						GitHash = kv.Value
 					}
 				}
 				log.Printf("OperatingSystem: %#v\n", OperatingSystem)
 				log.Printf("Arch: %#v\n", Arch)
 				log.Printf("Last commit: %#v\n", LC)
+				log.Printf("Git Hash: %#v\n", GitHash)
 			}
 		},
 	}

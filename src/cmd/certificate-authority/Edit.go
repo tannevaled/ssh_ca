@@ -61,6 +61,6 @@ func Edit(
 		"The SSH Certificate Authority state [ enable, disable, keep ]",
 	)
 
-	cmd.Flags().
+	//cmd.Flags().
 	return cmd
 }
