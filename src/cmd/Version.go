@@ -25,8 +25,9 @@ func Version(
 			fmt.Printf("version: '%s'\n", version)
 
 			if buildInfo, ok := debug.ReadBuildInfo(); ok {
-				fmt.Printf("Version: %#v\n", buildInfo)
-				log.Printf("Version: %#v\n", buildInfo.Settings)
+				//log.Printf("Version: %#v\n", buildInfo)
+				//log.Printf("Version: %#v\n", buildInfo.Deps)
+				//log.Printf("Version: %#v\n", buildInfo.Settings)
 				for _, kv := range buildInfo.Settings {
 					switch kv.Key {
 					case "GOOS":
@@ -40,10 +41,15 @@ func Version(
 						GitHash = kv.Value
 					}
 				}
+				log.Printf("Main.Version: %#v\n", buildInfo.Main.Version)
 				log.Printf("OperatingSystem: %#v\n", OperatingSystem)
 				log.Printf("Arch: %#v\n", Arch)
 				log.Printf("Last commit: %#v\n", LC)
 				log.Printf("Git Hash: %#v\n", GitHash)
+				log.Printf("%s\n", "Module dependencies")
+				for _, mod := range buildInfo.Deps {
+					log.Printf("\t%s %s\n", mod.Path, mod.Version)
+				}
 			}
 		},
 	}
