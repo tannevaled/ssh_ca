@@ -1,6 +1,6 @@
 build: get
 	mkdir -p output
-	go build -o output/ssh-ca
+	go build -ldflags="-X main.Commit=$$(git rev-parse HEAD)" -o output/ssh-ca
 	#go build -o output/ssh-ca .
 	chmod +x output/ssh-ca
 
