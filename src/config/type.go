@@ -2,6 +2,7 @@ package Config
 
 import (
 	"database/sql"
+	ConfigField "ssh-ca/src/config/field"
 	ConfigState "ssh-ca/src/config/state"
 	SSHCertificateAuthority "ssh-ca/src/ssh/certificate/authority"
 )
@@ -26,6 +27,11 @@ type Interface interface {
 	GetCertificateAuthority(*string) SSHCertificateAuthority.Interface
 	ShowCertificateAuthority(string)
 	ListCertificateAuthorities()
-	EditCertificateAuthority(*string, *string, *ConfigState.Enum)
+	EditCertificateAuthority(
+		*string,
+		*ConfigState.Enum,
+		*ConfigField.Enum,
+		*string,
+	)
 	// ToggleCa(string)
 }

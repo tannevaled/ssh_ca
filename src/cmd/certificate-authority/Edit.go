@@ -2,6 +2,7 @@ package CmdCertificateAuthority
 
 import (
 	Config "ssh-ca/src/config"
+	ConfigField "ssh-ca/src/config/field"
 	ConfigState "ssh-ca/src/config/state"
 
 	"github.com/spf13/cobra"
@@ -16,8 +17,9 @@ func Edit(
 	ssh_ca_config_file_path *string,
 ) *cobra.Command {
 	var ssh_certificate_authority_uuid string
-	var ssh_certificate_authority_description string = "UNSET"
-	var ssh_certificate_authority_state = ConfigState.Keep
+	var ssh_certificate_authority_state ConfigState.Enum = ConfigState.Keep
+	var ssh_certificate_authority_description ConfigField.Enum = ConfigField.Keep
+	var ssh_certificate_authority_description_value string
 
 	cmd := &cobra.Command{
 		Use:   "edit",
@@ -30,8 +32,9 @@ func Edit(
 
 			config.EditCertificateAuthority(
 				&ssh_certificate_authority_uuid,
-				&ssh_certificate_authority_description,
 				&ssh_certificate_authority_state,
+				&ssh_certificate_authority_description,
+				&ssh_certificate_authority_description_value,
 			)
 			config.ListCertificateAuthorities()
 		},
@@ -46,13 +49,6 @@ func Edit(
 	)
 	cmd.MarkFlagRequired("uuid")
 
-	cmd.Flags().StringVarP(
-		&ssh_certificate_authority_description,
-		"description",
-		"",
-		"",
-		"The SSH Certificate Authority description",
-	)
 	//__cmdCaEdit.MarkFlagsOneRequired("name")
 
 	cmd.Flags().Var(
@@ -61,6 +57,17 @@ func Edit(
 		"The SSH Certificate Authority state [ enable, disable, keep ]",
 	)
 
-	//cmd.Flags().
+	cmd.Flags().Var(
+		&ssh_certificate_authority_description,
+		"description",
+		"The SSH Certificate Authority description operation [ set, keep ]",
+	)
+	cmd.Flags().StringVarP(
+		&ssh_certificate_authority_description_value,
+		"description-value",
+		"",
+		"",
+		"The SSH Certificate Authority description value",
+	)
 	return cmd
 }
